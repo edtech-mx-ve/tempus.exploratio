@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.streamlit/secrets.toml
+data/snapshots/
+*.pyc
+
+# Repositorio y despliegue
+.env
+.env.*
+!.env.example
+*.log
+backups/
+*.bak
+*.bak_*
+.streamlit/credentials.toml
+.streamlit/secrets.toml
+.ipynb_checkpoints/
+.DS_Store

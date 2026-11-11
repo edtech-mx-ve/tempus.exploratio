@@ -1,0 +1,2 @@
+n,alpha,adf_estadistico,adf_p,adf_rezagos,adf_observaciones,kpss_estadistico,kpss_p,kpss_rezagos,interpretacion
+1254,0.05,-35.94416564523605,0.0,0,1253,0.35826447296530806,0.09514462372184997,1,Evidencia compatible con estacionariedad en nivel

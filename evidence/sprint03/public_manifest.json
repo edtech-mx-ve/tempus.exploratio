@@ -1,0 +1,36 @@
+{
+  "description": "Exportaciones históricas de cinco series financieras incluidas para demostración reproducible. No se actualizan automáticamente.",
+  "generated_from": "evidence/sprint03 (archivos existentes en TEMPUS EXPLORATIO v0.5.5)",
+  "series": {
+    "JNJ": {
+      "path": "evidence/sprint03/tempus_JNJ_indicadores.csv",
+      "sha256": "1f13cb49744c1339e48bebe35bb8cdc966c607d8a63afe8da192618bf045cdae",
+      "rows": 1255,
+      "last_date": "2026-10-30"
+    },
+    "MSFT": {
+      "path": "evidence/sprint03/tempus_MSFT_indicadores.csv",
+      "sha256": "8ec911a988fad07e63bd1a3a972a3351306b22cf6f91f1425b408ee98a348a26",
+      "rows": 1255,
+      "last_date": "2026-10-30"
+    },
+    "JPM": {
+      "path": "evidence/sprint03/tempus_JPM_indicadores.csv",
+      "sha256": "b4620b3bb5299f45ef136dd6eb52c66536c69a55c9e0ccbb362afd7442b5d477",
+      "rows": 1255,
+      "last_date": "2026-10-30"
+    },
+    "WMT": {
+      "path": "evidence/sprint03/tempus_WMT_indicadores.csv",
+      "sha256": "c43aa4666621fac3c078c1c1daeb8e08f2d307f0be625659b8f806238a0cdf56",
+      "rows": 1255,
+      "last_date": "2026-10-30"
+    },
+    "XOM": {
+      "path": "evidence/sprint03/tempus_XOM_indicadores.csv",
+      "sha256": "aa98f4b44c65f2dc75152717950b0416abf47db7a35d5a02a021de1f5d76ee30",
+      "rows": 1255,
+      "last_date": "2026-10-30"
+    }
+  }
+}

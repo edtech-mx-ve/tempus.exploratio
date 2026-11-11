@@ -1,0 +1,61 @@
+Date,sesion,modelo,pronostico,limite_inferior,limite_superior,intervalo_tipo
+2026-11-02,1,"ARIMA(1,1,1)",521.7124463,509.342076,534.0828165,ARIMA condicional 95%
+2026-11-02,1,Ingenuo,521.9099731,,,No estimado
+2026-11-02,1,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-03,2,"ARIMA(1,1,1)",521.8604809,504.1974733,539.5234884,ARIMA condicional 95%
+2026-11-03,2,Ingenuo,521.9099731,,,No estimado
+2026-11-03,2,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-04,3,"ARIMA(1,1,1)",521.7495378,500.1513188,543.3477567,ARIMA condicional 95%
+2026-11-04,3,Ingenuo,521.9099731,,,No estimado
+2026-11-04,3,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-05,4,"ARIMA(1,1,1)",521.832683,496.8463515,546.8190145,ARIMA condicional 95%
+2026-11-05,4,Ingenuo,521.9099731,,,No estimado
+2026-11-05,4,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-06,5,"ARIMA(1,1,1)",521.7703706,493.8481638,549.6925774,ARIMA condicional 95%
+2026-11-06,5,Ingenuo,521.9099731,,,No estimado
+2026-11-06,5,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-09,6,"ARIMA(1,1,1)",521.81707,491.2089852,552.4251548,ARIMA condicional 95%
+2026-11-09,6,Ingenuo,521.9099731,,,No estimado
+2026-11-09,6,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-10,7,"ARIMA(1,1,1)",521.7820716,488.726727,554.8374162,ARIMA condicional 95%
+2026-11-10,7,Ingenuo,521.9099731,,,No estimado
+2026-11-10,7,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-11,8,"ARIMA(1,1,1)",521.8083008,486.4599121,557.1566895,ARIMA condicional 95%
+2026-11-11,8,Ingenuo,521.9099731,,,No estimado
+2026-11-11,8,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-12,9,"ARIMA(1,1,1)",521.7886436,484.2976747,559.2796125,ARIMA condicional 95%
+2026-11-12,9,Ingenuo,521.9099731,,,No estimado
+2026-11-12,9,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-13,10,"ARIMA(1,1,1)",521.8033755,482.2783487,561.3284023,ARIMA condicional 95%
+2026-11-13,10,Ingenuo,521.9099731,,,No estimado
+2026-11-13,10,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-16,11,"ARIMA(1,1,1)",521.7923348,480.3382658,563.2464039,ARIMA condicional 95%
+2026-11-16,11,Ingenuo,521.9099731,,,No estimado
+2026-11-16,11,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-17,12,"ARIMA(1,1,1)",521.8006092,478.499526,565.1016923,ARIMA condicional 95%
+2026-11-17,12,Ingenuo,521.9099731,,,No estimado
+2026-11-17,12,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-18,13,"ARIMA(1,1,1)",521.794408,476.7246951,566.8641209,ARIMA condicional 95%
+2026-11-18,13,Ingenuo,521.9099731,,,No estimado
+2026-11-18,13,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-19,14,"ARIMA(1,1,1)",521.7990554,475.0255518,568.572559,ARIMA condicional 95%
+2026-11-19,14,Ingenuo,521.9099731,,,No estimado
+2026-11-19,14,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-20,15,"ARIMA(1,1,1)",521.7955725,473.3796396,570.2115053,ARIMA condicional 95%
+2026-11-20,15,Ingenuo,521.9099731,,,No estimado
+2026-11-20,15,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-23,16,"ARIMA(1,1,1)",521.7981827,471.7926914,571.803674,ARIMA condicional 95%
+2026-11-23,16,Ingenuo,521.9099731,,,No estimado
+2026-11-23,16,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-24,17,"ARIMA(1,1,1)",521.7962265,470.2509328,573.3415202,ARIMA condicional 95%
+2026-11-24,17,Ingenuo,521.9099731,,,No estimado
+2026-11-24,17,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-25,18,"ARIMA(1,1,1)",521.7976926,468.7567249,574.8386602,ARIMA condicional 95%
+2026-11-25,18,Ingenuo,521.9099731,,,No estimado
+2026-11-25,18,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-27,19,"ARIMA(1,1,1)",521.7965938,467.3013911,576.2917966,ARIMA condicional 95%
+2026-11-27,19,Ingenuo,521.9099731,,,No estimado
+2026-11-27,19,Suavizamiento exponencial,521.9099733,,,No estimado
+2026-11-30,20,"ARIMA(1,1,1)",521.7974173,465.8854952,577.7093393,ARIMA condicional 95%
+2026-11-30,20,Ingenuo,521.9099731,,,No estimado
+2026-11-30,20,Suavizamiento exponencial,521.9099733,,,No estimado
