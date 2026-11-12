@@ -1,0 +1,143 @@
+{
+  "version": "10y.1",
+  "fecha_corte": "2026-10-30",
+  "periodo": [
+    "2016-10-30",
+    "2026-10-30"
+  ],
+  "frecuencia": "diaria bursatil",
+  "tickers": [
+    "JNJ",
+    "MSFT",
+    "JPM",
+    "WMT",
+    "XOM"
+  ],
+  "fuente": "snapshots locales verificados procedentes de Yahoo Finance / yfinance",
+  "sources": {
+    "JNJ": {
+      "snapshot": "E:\\DISCO C\\Antonio Toro\\UIA-MAI\\9. Topicos IA para Transformacion Digital\\Unidad4\\TEMPUS DECISIO\\TEMPUS EXPLORATIO\\data\\snapshots\\JNJ\\20261112T033637Z_210d78cc.parquet",
+      "sha256": "16e88cd7927ac671e1d63bd0f95f9b8ba4d061d41398827671e05f0f457dc3f7",
+      "inicio": "2016-10-31",
+      "fin": "2026-10-30",
+      "filas": 2514
+    },
+    "MSFT": {
+      "snapshot": "E:\\DISCO C\\Antonio Toro\\UIA-MAI\\9. Topicos IA para Transformacion Digital\\Unidad4\\TEMPUS DECISIO\\TEMPUS EXPLORATIO\\data\\snapshots\\MSFT\\20261112T032753Z_5d90c0f1.parquet",
+      "sha256": "2c9bd42d9eb9e39a685c4dcd69227625feff044e443432d039d7bd16a4f5aa1b",
+      "inicio": "2016-10-31",
+      "fin": "2026-10-30",
+      "filas": 2514
+    },
+    "JPM": {
+      "snapshot": "E:\\DISCO C\\Antonio Toro\\UIA-MAI\\9. Topicos IA para Transformacion Digital\\Unidad4\\TEMPUS DECISIO\\TEMPUS EXPLORATIO\\data\\snapshots\\JPM\\20261112T032754Z_ad142822.parquet",
+      "sha256": "787f53961d022d1e86b1f185baf731f3dc8b86bfa461e8d751ab1b4de5485af3",
+      "inicio": "2016-10-31",
+      "fin": "2026-10-30",
+      "filas": 2514
+    },
+    "WMT": {
+      "snapshot": "E:\\DISCO C\\Antonio Toro\\UIA-MAI\\9. Topicos IA para Transformacion Digital\\Unidad4\\TEMPUS DECISIO\\TEMPUS EXPLORATIO\\data\\snapshots\\WMT\\20261112T032755Z_a16fe62d.parquet",
+      "sha256": "033e98fd5dd2282afa31cfb755e2147b2fe13cc261bb6cf1925acc030a09e564",
+      "inicio": "2016-10-31",
+      "fin": "2026-10-30",
+      "filas": 2514
+    },
+    "XOM": {
+      "snapshot": "E:\\DISCO C\\Antonio Toro\\UIA-MAI\\9. Topicos IA para Transformacion Digital\\Unidad4\\TEMPUS DECISIO\\TEMPUS EXPLORATIO\\data\\snapshots\\XOM\\20261112T032755Z_894d7591.parquet",
+      "sha256": "8cea546e141f0aa3184e34300de6f7f5e2484c25205db9e12c05fe32de020cd9",
+      "inicio": "2016-10-31",
+      "fin": "2026-10-30",
+      "filas": 2514
+    }
+  },
+  "observaciones_por_empresa": {
+    "JNJ": 2514,
+    "MSFT": 2514,
+    "JPM": 2514,
+    "WMT": 2514,
+    "XOM": 2514
+  },
+  "registros_totales": 12570,
+  "config_walk_forward": {
+    "test_fraction": 0.2,
+    "step": 10,
+    "horizon": 1
+  },
+  "evaluaciones_por_empresa": {
+    "JNJ": 51,
+    "MSFT": 51,
+    "JPM": 51,
+    "WMT": 51,
+    "XOM": 51
+  },
+  "evaluaciones_totales": 765,
+  "pronosticos_futuros": {
+    "sesiones": 20,
+    "metodos": [
+      "Ingenuo",
+      "Suavizamiento exponencial",
+      "ARIMA(1,1,1)"
+    ],
+    "observaciones_por_empresa": 60
+  },
+  "metricas": [
+    "MAE",
+    "RMSE",
+    "sMAPE_pct"
+  ],
+  "mejor_por_mae": {
+    "JNJ": "Suavizamiento exponencial",
+    "MSFT": "Suavizamiento exponencial",
+    "JPM": "Ingenuo",
+    "WMT": "ARIMA(1,1,1)",
+    "XOM": "ARIMA(1,1,1)"
+  },
+  "pdf": "TEMPUS_EXPLORATIO_Informe_Integral_10_Anos.pdf",
+  "contrato_archivos": 8,
+  "sha256_archivos": {
+    "contrato\\tempus_exploratio_base100.csv": "f8181c2704a992422c99d07cbc065b8938f02fc8ef52ad5d4e6b389a7b5f0898",
+    "contrato\\tempus_exploratio_JNJ_pronosticos.csv": "38a28aa424fbc2c8360a69f9996d8976eff985d8b775fa626a8728379d4d3d59",
+    "contrato\\tempus_exploratio_JPM_pronosticos.csv": "f6670b4ab36e8b12cc507170f230705a920b63f85d9c22a791c8a37f8c05a70f",
+    "contrato\\tempus_exploratio_metadata.json": "feb98ebba07f13bc6751e4ff425a8df9f44eb7aea4fe6d8e3b1f72c87821e621",
+    "contrato\\tempus_exploratio_metricas.csv": "b16b39785be3b1f9baffe3f4976ebc802d12be50c39529dfed69e22c699ecbac",
+    "contrato\\tempus_exploratio_MSFT_pronosticos.csv": "a2fe7dd459b523f0f39d040831ba69d7bc9803ad9c3dbfc866416a260adbc06e",
+    "contrato\\tempus_exploratio_WMT_pronosticos.csv": "04ad48f7de36cb37a34fb6761ed90f1b1a863d122e2e198b3a7c671d193f7b09",
+    "contrato\\tempus_exploratio_XOM_pronosticos.csv": "f485c89761b2e429bfe27897c284106c81369d9390274dc6b29f43662fe576c4",
+    "evidence\\tempus_correlaciones.csv": "2e83d357bf840216d0cb8668ada791692ad97fd8db596bf5f0591592902b82a9",
+    "evidence\\tempus_JNJ_evaluacion.json": "317a6af9ce206f02baea8dba065870b60eb7442e8d8506861d900f59dc5849c6",
+    "evidence\\tempus_JNJ_indicadores.csv": "c3882ceb4335e1e28e4d019430a39323817794cc1b24380f4b64faff70129345",
+    "evidence\\tempus_JNJ_metricas.csv": "3c16a76f9b840beabfca975ddd79c18c2ba2910052ce3f6c438d62da3f794343",
+    "evidence\\tempus_JNJ_pronosticos.csv": "0e39e9ba2c03fb5caae1f94204c94953443d938672d7ee90b97b12240371b913",
+    "evidence\\tempus_JPM_evaluacion.json": "317a6af9ce206f02baea8dba065870b60eb7442e8d8506861d900f59dc5849c6",
+    "evidence\\tempus_JPM_indicadores.csv": "d5474750e57efc3219a23cf70a1fc59f0cf2c64afec1cd4a3693258a11a9ae18",
+    "evidence\\tempus_JPM_metricas.csv": "30f0ecbc1f7522c2cbc62dcb6140fde88f88be8fd3dce617364e9cf693464a1c",
+    "evidence\\tempus_JPM_pronosticos.csv": "b2235c276cb6b629d53aff94aea7849a98bcb638f42c507389b3c64627d3c650",
+    "evidence\\tempus_MSFT_evaluacion.json": "317a6af9ce206f02baea8dba065870b60eb7442e8d8506861d900f59dc5849c6",
+    "evidence\\tempus_MSFT_indicadores.csv": "17f206ba5d3f0bfe80d8560839ebee955d30428b26484807016ecac42754513f",
+    "evidence\\tempus_MSFT_metricas.csv": "6dc00e7e814e46d9463affbcfd94bc5e76e74d22e2450f3526b802d0f7389b2d",
+    "evidence\\tempus_MSFT_pronosticos.csv": "e33a85faa7ddd9b0fc098aad87368668be1ab6616d376cd2327fdf7ac35c6349",
+    "evidence\\tempus_series_base100.csv": "2ca2ffd420557e4d6c13e9ce586885395b0f6fabd5a8cb87628a1405f2fc2994",
+    "evidence\\tempus_WMT_evaluacion.json": "317a6af9ce206f02baea8dba065870b60eb7442e8d8506861d900f59dc5849c6",
+    "evidence\\tempus_WMT_indicadores.csv": "6032122596fecdf659ea230fab6efcfd61286f70ba6f663af020e53dfd7a1974",
+    "evidence\\tempus_WMT_metricas.csv": "95aa1ad3a114c34353ec59dc6949bbe9848e24424b07a7f655e83dde51156d78",
+    "evidence\\tempus_WMT_pronosticos.csv": "2be99267fcf55b7021e2d2ec583a8fb799942ff1113f455f46fff1827e989ab9",
+    "evidence\\tempus_XOM_evaluacion.json": "317a6af9ce206f02baea8dba065870b60eb7442e8d8506861d900f59dc5849c6",
+    "evidence\\tempus_XOM_indicadores.csv": "72cda2fbc36a326eae6c5549b3b493f13cce1a218727cec89a54b86ba9ed6102",
+    "evidence\\tempus_XOM_metricas.csv": "c253ebf611ab61a630a00816bdc8d96c633045608c1f59ce5a001b469db6a065",
+    "evidence\\tempus_XOM_pronosticos.csv": "353e863236e933ae6f4bda7959d6783d01d93d64104b25f7ccaf2073b2f2dca1",
+    "future\\tempus_JNJ_futuro.csv": "87937d661758446c7b2b8834dee30553c7255f6d58ed7cd4bf27be7afe0193c8",
+    "future\\tempus_JNJ_futuro.json": "8b2ce6e2f365a70eeb9f2e5d8228c204cdbc3ab1edd62cde6c102fee3366be8c",
+    "future\\tempus_JPM_futuro.csv": "32f709d03d39d7d86b84847460dc7b7b63aa4870b5fefdc1a142725600dc4f28",
+    "future\\tempus_JPM_futuro.json": "926e311492215cda70a176c892632ece094a30c31b65ca73f29eeb84e65170ba",
+    "future\\tempus_MSFT_futuro.csv": "0857ba1e4bce6103973ae179a83377f6218e8919f600b8b23a513eda5393f47d",
+    "future\\tempus_MSFT_futuro.json": "37121d738acbb69fe5a7d6602d71998801b595345b1edf84c3cbb97c385043d5",
+    "future\\tempus_WMT_futuro.csv": "b7a27992b8d06792f3bbb1ce192b733061354ea63dc408863ae4f4dc0e35d9d2",
+    "future\\tempus_WMT_futuro.json": "028164926b02b97ba6cf48c58b5e6623530d060088b5377de9ea40f8149904be",
+    "future\\tempus_XOM_futuro.csv": "4eee31df1fd85ad89608fa83901be222a167cf3412cb13b7a4c14780c12c93ef",
+    "future\\tempus_XOM_futuro.json": "cae44893cd946687188c9bf5e85d5315ac0d171c2803b95875e2eaae36968724",
+    "TEMPUS_EXPLORATIO_Informe_Integral_10_Anos.pdf": "0dce0cf0691997535afa49a47474d0246cd1719b7103d6b88c2e791a16e3f580"
+  },
+  "advertencia": "Pronosticos posteriores a la ultima observacion del snapshot; pueden ser fechas ya pasadas respecto de hoy. Uso academico.",
+  "seccion_comparativa": "Análisis comparativo de las cinco acciones antes de pronósticos futuros"
+}
