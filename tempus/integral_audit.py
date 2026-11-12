@@ -84,7 +84,7 @@ def _verify_report(report_dir: Path, data: dict[str, Any],
         return None, pd.DataFrame(), pd.DataFrame()
     invalid: list[str] = []
     for rel, digest in hashes.items():
-        p = (report_dir / rel).resolve()
+        p = (report_dir / rel.replace(chr(92), "/")).resolve()
         if (not p.is_relative_to(report_dir.resolve())
                 or not p.is_file() or sha256(p.read_bytes()).hexdigest() != digest):
             invalid.append(str(rel))
