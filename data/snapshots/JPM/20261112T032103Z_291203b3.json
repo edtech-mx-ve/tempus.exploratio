@@ -1,0 +1,16 @@
+{
+  "ticker": "JPM",
+  "asset": {
+    "ticker": "JPM",
+    "company": "JPMorgan Chase",
+    "sector": "Financiero"
+  },
+  "version": "20261112T032103Z_291203b3",
+  "source": "Yahoo Finance / yfinance o importación verificada",
+  "adjustment": "OHLC ajustado si la fuente fue yfinance con auto_adjust=True",
+  "records": 2514,
+  "first_date": "2016-10-31",
+  "last_date": "2026-10-30",
+  "saved_at_utc": "2026-11-12T03:21:03.663086+00:00",
+  "sha256": "6cf04a8ef6a52176be811a4ad7afd4e42cfc645c74a6504733a823e31287aa1e"
+}

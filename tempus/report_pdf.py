@@ -185,6 +185,26 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
         canvas.drawRightString(w-1.8*cm,1.16*cm,str(document.page))
         canvas.restoreState()
 
+    # Fechas, cantidades y resultados se toman de las evidencias verificadas.
+    first_ticker = next(iter(evidence.forecasts))
+    first_pred = evidence.forecasts[first_ticker]
+    first_meta = evidence.metadata[first_ticker]
+    first_history = evidence.indicators[first_ticker]
+    n_history = len(first_history)
+    n_eval = len(first_pred)
+    first_day = str(pd.to_datetime(first_history["Date"]).min().date())
+    last_day = str(pd.to_datetime(first_history["Date"]).max().date())
+    train_end = first_meta["periodo_entrenamiento_fin_inicial"]
+    test_start = first_meta["periodo_prueba_inicio"]
+    test_end = first_meta["periodo_prueba_fin"]
+    step = first_meta["config"]["step"]
+    winner_by_ticker = {
+        str(row.ticker): str(row.modelo)
+        for row in best_models(evidence.metrics).itertuples()
+    }
+    winners_text = "; ".join(
+        f"{ticker}: {winner_by_ticker[ticker]}" for ticker in evidence.forecasts
+    )
     story=[]
     story += [Spacer(1,2.6*cm),
               HRFlowable(width="20%", thickness=5, color=BLUE, hAlign="CENTER"),
@@ -197,7 +217,7 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
               Spacer(1,1.8*cm),
               Paragraph("TEMPUS DECISIO",styles["TempCenter"]),
               Paragraph("Tópicos de Inteligencia Artificial para la Transformación Digital",styles["TempCenter"]),
-              Paragraph("11 de noviembre de 2026",styles["TempCenter"]),
+              Paragraph("Informe generado a partir de evidencia verificada",styles["TempCenter"]),
               Spacer(1,1*cm),
               small("Documento generado a partir de exportaciones verificadas de JNJ, MSFT, JPM, WMT y XOM. Los datos se atribuyen al origen declarado en la aplicación: snapshots históricos obtenidos mediante Yahoo Finance/yfinance. No representa asesoría financiera."),
               PageBreak()]
@@ -218,8 +238,8 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
         h("3. Fuente de datos y tratamiento"),p(
         "El proveedor de adquisición del proyecto es Yahoo Finance, mediante la biblioteca yfinance; "
         "la ejecución estudiada utilizó snapshots locales persistidos. "
-        "Se trabajó con 1.255 sesiones por activo, desde el 1 de noviembre de 2021 "
-        "hasta el 30 de octubre de 2026. El panel comparativo se alineó por fechas "
+        f"Se trabajó con {n_history:,} sesiones por activo, desde {first_day} "
+        f"hasta {last_day}. El panel comparativo se alineó por fechas "
         "y normalizó a índice base 100. Para los pronósticos se empleó la columna "
         "Close ajustada según la configuración histórica del proveedor."),
         small("Los CSV de indicadores y la matriz de correlaciones son exportaciones de la aplicación. "
@@ -250,24 +270,24 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
                 "(SES) y ARIMA(1,1,1)."),
               p("<b>Validación:</b> partición cronológica con 80% inicial para entrenamiento "
                 "y 20% final para evaluación. Se pronostica una sesión por origen. "
-                "Se evalúa un origen cada diez sesiones, resultando 26 fechas por activo. "
+                f"Se evalúa un origen cada {step} sesiones, resultando {n_eval} fechas por activo. "
                 "Los modelos se reajustan con información anterior a cada objetivo."),
               p("<b>Métricas:</b> MAE y RMSE en unidades de precio, sMAPE en porcentaje. "
                 "No se comparan MAE ni RMSE directamente entre acciones porque sus "
                 "niveles de precio difieren. Las fechas válidas son comunes a los tres modelos."),
               make_table(["Aspecto","Configuración"],[
                   ["Activos",", ".join(evidence.forecasts)],
-                  ["Entrenamiento inicial","01-11-2021 a 30-10-2025"],
-                  ["Evaluación cronológica","31-10-2025 a 30-10-2026"],
+                  ["Entrenamiento inicial",f"{first_day} a {train_end}"],
+                  ["Evaluación cronológica",f"{test_start} a {test_end}"],
                   ["Fracción de prueba","20%"],
                   ["Horizonte","1 sesión bursátil"],
-                  ["Origen de evaluación","cada 10 sesiones"],
-                  ["Muestras evaluadas","26 por activo y modelo"],
+                  ["Origen de evaluación",f"cada {step} sesiones"],
+                  ["Muestras evaluadas",f"{n_eval} por activo y modelo"],
                   ["Incidencias registradas","0 en las cinco series"],
               ],[usable*.36,usable*.64]),
               Spacer(1,.3*cm),
               h("6. Evaluación y pruebas realizadas"),
-              p("Se recalcularon MAE, RMSE y sMAPE desde los 26 registros de pronóstico "
+              p(f"Se recalcularon MAE, RMSE y sMAPE desde los {n_eval} registros de pronóstico "
                 "de cada empresa. Se verificaron fechas comunes, ausencia de nulos, "
                 "parámetros compartidos, tablas coherentes y consistencia de la matriz de "
                 "correlaciones. Las exportaciones no reportan fallos de ajuste. "
@@ -286,7 +306,7 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
                          [usable*.12,usable*.39,usable*.16,usable*.16,usable*.17]),
               Spacer(1,.4*cm),
               Image(_plot_smape(evidence),width=usable,height=usable*.38),
-              small("Figura 3. sMAPE histórico en las mismas 26 fechas por activo. Menor error es preferible."),
+              small(f"Figura 3. sMAPE histórico en las mismas {n_eval} fechas por activo. Menor error es preferible."),
               PageBreak()]
     winner=best_models(evidence.metrics)
     winrows=[[r.ticker,r.modelo,f"{r.MAE:.4f}"] for r in winner.itertuples()]
@@ -294,18 +314,16 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
               make_table(["Activo","Menor MAE","MAE"],winrows,
                          [usable*.17,usable*.55,usable*.28]),
               Spacer(1,.4*cm),
-              p("El método ingenuo fue competitivo en todos los activos. ARIMA registró "
-                "el menor MAE para JNJ y WMT; el ingenuo para MSFT, JPM y XOM. "
-                "Las diferencias entre métodos son pequeñas y en varios casos "
-                "dependen de la métrica escogida. Un menor error muestral no demuestra "
-                "superioridad estadística."),
-              p("En términos relativos, MSFT presenta mayor sMAPE que JNJ en esta muestra, "
-                "pero esto no implica que una serie sea intrínsecamente más difícil "
-                "en cualquier período. La interpretación está condicionada al horizonte "
-                "de una sesión y las 26 fechas seleccionadas."),
+              p("Los mejores métodos según MAE en la muestra actual fueron: "
+                + winners_text + ". "
+                "Estas comparaciones son descriptivas; una menor métrica muestral no "
+                "prueba superioridad estadística."),
+              p(f"El análisis corresponde a {n_eval} orígenes cronológicos por activo, "
+                "todos de una sesión bursátil adelante. Las diferencias dependen del "
+                "activo, la ventana y el protocolo de evaluación."),
               h("9. Limitaciones y seguridad"),
               p("La comparación no cubre todas las sesiones del período de prueba: "
-                "solo se toma una fecha de cada diez. No se aplicaron pruebas de "
+                f"solo se toma una fecha de cada {step}. No se aplicaron pruebas de "
                 "significación sobre diferencias de errores, optimización interna "
                 "de hiperparámetros ni cambios de régimen. Los resultados son "
                 "históricos y no garantizan desempeño futuro."),
@@ -325,13 +343,13 @@ def create_academic_pdf(evidence: Evidence, destination: Path,
               p("El software se implementó en Python 3.12 con pandas, numpy, "
                 "statsmodels, Plotly y Streamlit. La capa de adquisición y persistencia "
                 "es independiente de los cálculos estadísticos y de la capa de presentación. "
-                "El Sprint 04 incorpora un comando de reporte que revisa las "
+                "La consolidación automatizada revisa las "
                 "exportaciones originales, contrasta métricas y produce un contrato "
                 "para el futuro módulo TEMPUS PREDICTIO."),
               p("<b>Comandos:</b> <font name='"+normal+"'>"
                 "python -m pip install -r requirements.txt<br/>"
                 "python -m pytest -v<br/>"
-                "python report_cli.py --input evidence/sprint03 --output reports<br/>"
+                "python run_10y_pipeline.py --snapshots data/snapshots --output-root reports<br/>"
                 "python -m streamlit run app.py</font>"),
               small("Los archivos de evidencia incluyen hashes SHA-256 en "
                     "tempus_exploratio_metadata.json para verificar integridad. "

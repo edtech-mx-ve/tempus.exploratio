@@ -1,0 +1,22 @@
+{
+  "metodo": "Ajuste con histórico completo; extrapolación posterior al último cierre",
+  "config": {
+    "horizon": 20,
+    "confidence": 0.95,
+    "min_train": 100
+  },
+  "modelos": [
+    "Ingenuo",
+    "Suavizamiento exponencial",
+    "ARIMA(1,1,1)"
+  ],
+  "observaciones_entrenamiento": 2514,
+  "ultimo_dato_observado": "2026-10-30",
+  "primer_pronostico": "2026-11-02",
+  "ultimo_pronostico": "2026-11-30",
+  "ultimo_cierre": 123.51000213623047,
+  "calendario": "XNYS (New York Stock Exchange)",
+  "datos_externos_adicionales": false,
+  "intervalos": "Solo ARIMA: intervalo condicional al modelo; no incorpora riesgo de cambios estructurales.",
+  "advertencia": "Pronóstico experimental, no recomendación financiera. No garantiza precisión ni incorpora eventos, noticias o ajustes futuros. Las fechas se calculan desde el último dato del archivo, que podría estar desactualizado."
+}

@@ -17,3 +17,4 @@ backups/
 .streamlit/secrets.toml
 .ipynb_checkpoints/
 .DS_Store
+reports/

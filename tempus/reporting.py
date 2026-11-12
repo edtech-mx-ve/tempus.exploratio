@@ -224,7 +224,7 @@ def metadata_for_export(evidence: Evidence) -> dict[str, object]:
         },
         "source_sha256": dict(evidence.source_hashes),
         "limitaciones": [
-            "Las 26 evaluaciones por activo no cubren cada sesión bursátil.",
+            f"Las {len(next(iter(evidence.forecasts.values())))} evaluaciones por activo no cubren cada sesión bursátil.",
             "Sin prueba de superioridad estadística entre modelos.",
             "No se incluyen recomendaciones de inversión.",
             "Los modelos de IA deben construir sus variables con información conocida hasta cada origen."

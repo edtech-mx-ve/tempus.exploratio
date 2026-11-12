@@ -1,0 +1,16 @@
+{
+  "ticker": "WMT",
+  "asset": {
+    "ticker": "WMT",
+    "company": "Walmart",
+    "sector": "Comercio minorista"
+  },
+  "version": "20261112T032755Z_a16fe62d",
+  "source": "Yahoo Finance / yfinance o importación verificada",
+  "adjustment": "OHLC ajustado si la fuente fue yfinance con auto_adjust=True",
+  "records": 2514,
+  "first_date": "2016-10-31",
+  "last_date": "2026-10-30",
+  "saved_at_utc": "2026-11-12T03:27:55.089942+00:00",
+  "sha256": "033e98fd5dd2282afa31cfb755e2147b2fe13cc261bb6cf1925acc030a09e564"
+}

@@ -1,0 +1,16 @@
+{
+  "ticker": "MSFT",
+  "asset": {
+    "ticker": "MSFT",
+    "company": "Microsoft",
+    "sector": "Tecnología"
+  },
+  "version": "20261112T032753Z_5d90c0f1",
+  "source": "Yahoo Finance / yfinance o importación verificada",
+  "adjustment": "OHLC ajustado si la fuente fue yfinance con auto_adjust=True",
+  "records": 2514,
+  "first_date": "2016-10-31",
+  "last_date": "2026-10-30",
+  "saved_at_utc": "2026-11-12T03:27:53.919944+00:00",
+  "sha256": "2c9bd42d9eb9e39a685c4dcd69227625feff044e443432d039d7bd16a4f5aa1b"
+}

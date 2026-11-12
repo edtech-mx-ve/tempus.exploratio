@@ -40,11 +40,30 @@ def normalize_prices(frame: pd.DataFrame) -> pd.DataFrame:
         raise ValueError("Todos los precios deben ser positivos")
     if (result["Volume"] < 0).any() or not np.isfinite(result["Volume"].to_numpy(dtype=float)).all():
         raise ValueError("Volumen inválido")
-    # Con auto_adjust=True el OHLC es ajustado; consistencia intradía conservada.
-    if (result["High"] < result[["Open", "Close", "Low"]].max(axis=1)).any():
-        raise ValueError("High inconsistente")
-    if (result["Low"] > result[["Open", "Close", "High"]].min(axis=1)).any():
-        raise ValueError("Low inconsistente")
+    # Yahoo puede devolver discrepancias sub-centavo por el ajuste y redondeo
+    # de OHLC. Aceptamos solo errores relativos <= 1e-6; nunca corregimos precios.
+    # Una discrepancia material sigue produciendo un error audit-able.
+    max_esperado = result[["Open", "Close", "Low"]].max(axis=1)
+    tol_high = np.maximum(1e-7, max_esperado.abs() * 1e-6)
+    high_error = max_esperado - result["High"]
+    high_invalido = high_error > tol_high
+    if high_invalido.any():
+        fecha = high_invalido[high_invalido].index[0]
+        diferencia = high_error.loc[fecha]
+        raise ValueError(
+            f"High inconsistente el {fecha.date()}: diferencia USD {diferencia:.8f}"
+        )
+
+    min_esperado = result[["Open", "Close", "High"]].min(axis=1)
+    tol_low = np.maximum(1e-7, min_esperado.abs() * 1e-6)
+    low_error = result["Low"] - min_esperado
+    low_invalido = low_error > tol_low
+    if low_invalido.any():
+        fecha = low_invalido[low_invalido].index[0]
+        diferencia = low_error.loc[fecha]
+        raise ValueError(
+            f"Low inconsistente el {fecha.date()}: diferencia USD {diferencia:.8f}"
+        )
     result.index.name = "Date"
     return result
 

@@ -1,263 +1,255 @@
 <div align="center">
 
-<img src="assets/tempus-logo.png" width="150" alt="Logotipo de TEMPUS EXPLORATIO: reloj y gráfica financiera ascendente">
+<img src="assets/tempus-logo.png" width="150" alt="Logotipo TEMPUS EXPLORATIO">
 
-# 📈 TEMPUS DECISIO — TEMPUS EXPLORATIO
+# TEMPUS DECISIO — TEMPUS EXPLORATIO
 
-### 🕰️ Módulo I · Análisis y pronóstico estadístico de series temporales financieras
+### Módulo I · Exploración y pronóstico estadístico de series temporales bursátiles
 
-**Adquisición web · Exploración temporal · Evaluación walk-forward · Pronósticos · Informe académico**
+**Edición local de 10 años · Python 3.12 · Streamlit · pandas · statsmodels · Plotly · PDF**
 
-**🐍 Python 3.12 · 📊 Streamlit y Plotly · 🧮 pandas y statsmodels · 📄 PDF**
-
-**[🌐 Abrir TEMPUS EXPLORATIO en Streamlit](https://tempus-exploratio.streamlit.app/) · [📁 Repositorio GitHub](https://github.com/edtech-mx-ve/tempus.exploratio)**
+[Aplicación pública (edición anterior)](https://tempus-exploratio.streamlit.app/) ·
+[Repositorio público (edición anterior)](https://github.com/edtech-mx-ve/tempus.exploratio)
 
 </div>
 
----
+> **Estado de publicación:** esta documentación describe la **edición local de diez años**. La versión pública de GitHub/Streamlit Cloud **no se ha actualizado** con los cambios locales recientes. No debe suponerse equivalencia entre ambas.
 
-## 1. 📍 Estado del proyecto
+## 1. Alcance y datos verificados
 
-**TEMPUS EXPLORATIO** es el Módulo I de **TEMPUS DECISIO**. Es una aplicación académica de Streamlit que explora cinco series temporales bursátiles y compara tres métodos estadísticos para obtener estimaciones posteriores al último cierre.
+TEMPUS EXPLORATIO estudia el comportamiento histórico de cinco acciones y compara modelos **estadísticos** (no modelos de aprendizaje automático) con una evaluación temporal reproducible. La aplicación local funciona **solo con diez años**; ya no ofrece la selección de cinco años.
 
-| Elemento | Configuración o resultado |
+| Elemento | Valor |
 |---|---|
-| Versión preparada para la web | **0.5.6 · paquete mínimo** |
-| Repositorio | `edtech-mx-ve/tempus.exploratio` |
-| Empresa / símbolo | **JNJ, MSFT, JPM, WMT y XOM** |
-| Fuente histórica declarada | Yahoo Finance, mediante `yfinance` |
-| Corte de la evidencia incluida | **30 de octubre de 2026** |
-| Observaciones | **1.255 por empresa · 6.275 en total** |
-| Métodos estadísticos | Ingenuo, SES y ARIMA(1,1,1) |
-| Evaluación retrospectiva | *Walk-forward* · 26 orígenes por empresa y método |
+| Activos | JNJ, MSFT, JPM, WMT, XOM |
+| Fuente | Yahoo Finance, mediante `yfinance`; históricos guardados como snapshots Parquet |
+| Corte | 30 de octubre de 2026 |
+| Primera sesión observada | 31 de octubre de 2016 |
+| Frecuencia | Una observación por **sesión bursátil diaria** |
+| Registros verificados | **2.514 por activo · 12.570 en total** |
+| Mercados/calendario de extrapolación | Sesiones NYSE, excluyendo jornadas no negociadas |
+| Métodos | Ingenuo, suavizamiento exponencial simple (**SES**) y **ARIMA(1,1,1)** |
 | Métricas | MAE, RMSE y sMAPE |
-| Horizontes de pronóstico | 1, 5, 10 y 20 sesiones de NYSE |
-| Incertidumbre | Intervalo condicional del 95 % para ARIMA |
-| Informe | PDF integral generado **desde la aplicación** |
-| URL de la aplicación | [https://tempus-exploratio.streamlit.app/](https://tempus-exploratio.streamlit.app/) |
-| Estado del despliegue | **URL comunicada; acceso público y funciones pendientes de verificación independiente** |
+| Evaluación retrospectiva | **51 orígenes por activo y modelo**; paso de diez sesiones |
+| Predicciones retrospectivas | **765** en total: 5 activos × 51 orígenes × 3 modelos |
+| Estimaciones posteriores al corte | **300**: 5 activos × 20 sesiones × 3 modelos |
+| Horizontes consultables | **1, 5, 10 y 20 sesiones bursátiles** |
+| Incertidumbre | Intervalos condicionales al 95 % para ARIMA |
+| Tema | Diurno (claro) por defecto |
 
-> Los pronósticos son posteriores al último registro **del conjunto seleccionado**, no necesariamente posteriores a la fecha de consulta. No son recomendaciones de inversión.
+**Diez años naturales no equivalen a 3.650 registros diarios**: se contabilizan únicamente sesiones con actividad bursátil. Las 765 y las 300 estimaciones son **salidas de los modelos**, no registros históricos adicionales.
 
-## 2. 🎯 Objetivo y alcance
+Los resultados corresponden al archivo terminado el **30/10/2026**. «Pronóstico futuro» significa posterior al último cierre observado; **no necesariamente posterior a la fecha actual**. El proyecto tiene fines académicos y no constituye asesoramiento financiero.
 
-Analizar cinco series financieras obtenidas de la web, validar sus datos, estudiar su evolución, contrastar métodos estadísticos mediante evaluación cronológica y comunicar estimaciones e incertidumbre con visualizaciones y un informe reproducible.
+## 2. Funcionalidades
 
-Se trabaja con un subconjunto histórico de tamaño manejable. **6.275 registros no constituyen por sí mismos una implementación distribuida de Big Data.**
+- **Control de datos**: selección de empresa y fuente; snapshots locales versionados y descarga de históricos de diez años.
+- **Precio e indicadores**: cierre y medias móviles MA20/MA50 (20 y 50 sesiones).
+- **Rendimientos**: rendimientos diarios y distribución.
+- **Datos y exportación**: tabla y CSV de los datos preparados.
+- **Calidad**: fechas, duplicados, faltantes, rangos y coherencia de las observaciones.
+- **Estadística temporal**: ADF, KPSS, ACF, PACF y otros diagnósticos.
+- **Comparación multiserie**: índice base 100, correlaciones y comparación de activos.
+- **Pronósticos estadísticos**: evaluación *walk-forward* y exportación de resultados.
+- **Pronóstico futuro**: extrapolaciones para 1/5/10/20 sesiones y descargas.
+- **Informe final**: consulta y descarga del PDF integral de diez años cuando existe una ejecución verificada.
+- **Prueba integral**: auditoría de los snapshots, los cálculos y las evidencias, con tabla de resultados y visualizaciones. **No equivale** a automatizar clics de todos los controles Streamlit.
+- **Páginas informativas**: Acerca de, Dataset, Fundamentos, Trivia, Ayuda e Institucional; la Ayuda incluye un ejemplo de comprobación con JNJ.
 
-## 3. 🖥️ Interfaz de la aplicación
+### Convenciones de visualización
 
-La barra lateral permite seleccionar el activo y el origen de los datos, y acceder a **Acerca de, Dataset, Fundamentos, Trivia, Ayuda e Institucional**.
-
-El análisis financiero cuenta con nueve secciones:
-
-| Sección | Función |
+| Tipo | Etiqueta recomendada del eje Y |
 |---|---|
-| Precio e indicadores | Cierre y medias móviles |
-| Rendimientos | Distribución y evolución de retornos |
-| Datos y exportación | Tabla y descarga de datos preparados |
-| Calidad | Verificación de la serie |
-| Estadística temporal | Estadísticos, ADF/KPSS, ACF/PACF |
-| Comparación multiserie | Normalización y correlaciones |
-| Pronósticos estadísticos | Evaluación *walk-forward* |
-| Pronóstico futuro | Extrapolación a sesiones bursátiles posteriores |
-| **Informe final** | Evaluación y PDF académico integral |
+| Precio y pronósticos | `Precio (USD/acción)` |
+| Rendimiento | `Rendimiento (%)` |
+| Volatilidad | `Volatilidad anualizada (%)` |
+| Volumen | `Acciones negociadas` |
+| Comparación relativa | `Índice (base 100)` |
+| Correlación | `Coeficiente de Pearson` |
+| Eje temporal | `Fecha (sesiones bursátiles diarias)` |
 
-Para iniciar una demostración sin descargar cotizaciones, elige **Histórico incluido** y pulsa **Cargar / adquirir datos**.
+Las unidades se aplican según corresponda; un gráfico de distribución o ACF/PACF tiene ejes propios. Los rezagos se expresan en **sesiones bursátiles**.
 
-## 4. 🔁 Flujo metodológico
+## 3. Requisitos e instalación local
 
-```text
-Web / histórico archivado / snapshot
-                 │
-                 ▼
-     Validación y normalización
-                 │
-                 ▼
-       Estadística temporal
-                 │
-                 ▼
-         Ingenuo · SES · ARIMA
-                 │
-                 ▼
-    Evaluación cronológica walk-forward
-                 │
-                 ▼
-         MAE · RMSE · sMAPE
-                 │
-                 ▼
-      Pronóstico posterior al corte
-                 │
-                 ▼
-     Gráficas · CSV/JSON · PDF
-```
-
-La evaluación retrospectiva compara estimaciones con precios ya observados. Los pronósticos posteriores al corte son otra operación: su error solo puede evaluarse cuando se conocen los cierres correspondientes.
-
-## 5. 📚 Datos financieros
-
-| Símbolo | Empresa | Sector |
-|---|---|---|
-| JNJ | Johnson & Johnson | Salud |
-| MSFT | Microsoft | Tecnología |
-| JPM | JPMorgan Chase | Banca |
-| WMT | Walmart | Comercio minorista |
-| XOM | ExxonMobil | Energía |
-
-La evidencia incluida contiene cinco CSV históricos y un manifiesto que registra **SHA-256, cantidad de filas y fecha final**. Los archivos de evaluación y de pronósticos futuros son necesarios para la sección **Informe final**.
-
-**Fuentes técnicas:** [Yahoo Finance](https://finance.yahoo.com/) · [yfinance](https://github.com/ranaroussi/yfinance). Los hashes confirman integridad de los archivos archivados, no sustituyen los registros independientes de adquisición ni acreditan derechos de redistribución.
-
-## 6. 🧮 Métodos de pronóstico
-
-| Método | Principio |
-|---|---|
-| **Ingenuo** | Repite el último cierre observado |
-| **SES** | Suavizamiento exponencial simple |
-| **ARIMA(1,1,1)** | Modelo autorregresivo integrado de media móvil |
-
-La evaluación utiliza **26 fechas comunes por empresa y método**, con un conjunto de prueba cronológico equivalente al 20 % final del histórico y una separación de diez sesiones entre orígenes.
-
-| Empresa | Menor MAE en la evaluación | MAE | RMSE | sMAPE |
-|---|---|---:|---:|---:|
-| JNJ | ARIMA(1,1,1) | 2,2388 | 2,8101 | 0,9299 % |
-| MSFT | Ingenuo | 8,0918 | 11,9832 | 1,8202 % |
-| JPM | Ingenuo | 3,4415 | 4,2202 | 1,0923 % |
-| WMT | ARIMA(1,1,1) | 1,6399 | 2,6464 | 1,3953 % |
-| XOM | Ingenuo | 2,4942 | 3,0042 | 1,6753 % |
-
-Estas cifras se refieren a la evaluación histórica incluida; no demuestran superioridad estadística universal.
-
-## 7. 🔮 Pronósticos y PDF integral
-
-El módulo genera estimaciones para **1, 5, 10 y 20 sesiones bursátiles** después del último registro. Los límites condicionales del 95 % se calculan únicamente para ARIMA.
-
-La página **Informe final** consume los CSV/JSON de evidencia ya incorporados y permite **generar y descargar** un PDF con el análisis histórico, la evaluación y las cinco secciones de pronóstico. **No se almacena un PDF pre-generado en este repositorio mínimo.**
-
-## 8. 🏗️ Estructura mínima para Streamlit Cloud
-
-```text
-tempus.exploratio/
-├── app.py
-├── README.md
-├── requirements.txt
-├── .gitignore
-├── .streamlit/
-│   └── config.toml
-├── tempus/
-│   ├── __init__.py
-│   ├── assets.py
-│   ├── core.py
-│   ├── demo.py
-│   ├── forecasting.py
-│   ├── future.py
-│   ├── future_report.py
-│   ├── info_pages.py
-│   ├── integrated_report.py
-│   ├── io.py
-│   ├── public_data.py
-│   ├── report_pdf.py
-│   ├── reporting.py
-│   ├── sidebar_info.py
-│   └── statistics.py
-├── evidence/
-│   └── sprint03/
-│       ├── public_manifest.json
-│       └── ... CSV/JSON históricos y de evaluación
-└── reports/
-    └── sprint05_futuro/
-        └── ... CSV/JSON de pronósticos
-```
-
-**Quedan fuera del repositorio web:** `.venv/`, `data/snapshots/`, PDF pre-generados, reportes locales, pruebas, respaldos, scripts CLI, guías de sprints y archivos temporales. La edición completa del proyecto se conserva en el entorno local.
-
-## 9. 🐍 Ejecución local
-
-Requiere Python **3.12**. Desde la raíz de este paquete en Windows PowerShell:
+- **Python 3.12** y conexión a internet **solo si se vuelven a adquirir cotizaciones**.
+- Windows PowerShell; los comandos se ejecutan desde la raíz del proyecto.
+- Dependencias fijadas o declaradas en `requirements.txt`.
+- Los archivos `data/snapshots/` se mantienen locales, versionados y sin sobrescrituras silenciosas.
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Abre `http://localhost:8501`. Selecciona **Histórico incluido** y carga una empresa para comprobar el funcionamiento sin conexión al proveedor de datos.
+Abrir **http://localhost:8501**. Para iniciar por defecto con tema diurno, mantener `.streamlit/config.toml` con:
 
-## 10. ☁️ Publicación en GitHub y Streamlit Community Cloud
-
-El repositorio de destino es:
-
-**https://github.com/edtech-mx-ve/tempus.exploratio**
-
-Desde la carpeta donde se haya descomprimido **este paquete mínimo**:
-
-```powershell
-git init
-git branch -M main
-git add .
-git status --short
-git commit -m "deploy: Streamlit TEMPUS EXPLORATIO minimo"
-git remote add origin https://github.com/edtech-mx-ve/tempus.exploratio.git
-git push -u origin main
+```toml
+[theme]
+base = "light"
+primaryColor = "#1767E8"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F3F6FB"
+textColor = "#172033"
 ```
 
-En [Streamlit Community Cloud](https://share.streamlit.io/), selecciona:
+Si el navegador conserva una preferencia personal, seleccionar **Settings → Theme → Light**.
 
-| Campo | Valor |
-|---|---|
-| Repositorio | `edtech-mx-ve/tempus.exploratio` |
-| Rama | `main` |
-| Archivo de ejecución | `app.py` |
-| Versión Python | `3.12` |
-| Dependencias | `requirements.txt` |
+## 4. Datos históricos: adquisición y validación
 
-**Dirección de la aplicación:** [https://tempus-exploratio.streamlit.app/](https://tempus-exploratio.streamlit.app/).
+Para actualizar los cinco activos con el corte académico indicado:
 
-> **Estado de verificación:** esta URL fue proporcionada tras el proceso de publicación. En una comprobación externa, el servicio redirigió a una página de autenticación de Streamlit; por ello, la accesibilidad sin iniciar sesión y las funciones operativas deben validarse desde una ventana privada del navegador.
+```powershell
+.\.venv\Scripts\python.exe refresh_10y.py --until 2026-10-30
+```
 
-Para completar la aceptación del despliegue, comprobar que se puede acceder a la aplicación, cargar los cinco históricos incluidos, consultar los pronósticos y generar el informe integral. La disponibilidad de la dirección no demuestra por sí sola que todos los módulos funcionen.
+El flujo comprueba cobertura, coherencia OHLC y procedencia; produce snapshots Parquet y metadatos. **No hace falta repetir esta descarga** para regenerar un informe que use los snapshots ya validados.
 
-## 11. ✅ Comprobaciones y reproducibilidad
+La ejecución local confirmada de los cinco históricos fue:
 
-Antes de empaquetar esta edición mínima se verificaron, mediante el código de proyecto:
+```text
+JNJ   2514 observaciones    2016-10-31 → 2026-10-30
+MSFT  2514 observaciones    2016-10-31 → 2026-10-30
+JPM   2514 observaciones    2016-10-31 → 2026-10-30
+WMT   2514 observaciones    2016-10-31 → 2026-10-30
+XOM   2514 observaciones    2016-10-31 → 2026-10-30
+TOTAL 12570 observaciones
+```
 
-- Los **cinco históricos** y sus huellas SHA-256.
-- Las **15 filas de métricas** de evaluación y sus evidencias.
-- Los **cinco pronósticos de 20 sesiones** con los respectivos metadatos.
-- La **generación del informe integral de 12 páginas** a partir únicamente de los archivos incluidos.
+**Integridad**: verificar hashes SHA-256, rango, número de sesiones y coherencia entre símbolos antes de aceptar cualquier resultado. No presentar demostraciones sintéticas como datos reales.
 
-La visualización y el funcionamiento del servicio desplegado deberán comprobarse en Streamlit Community Cloud; esas verificaciones no se sustituyen por la prueba local.
+## 5. Generación automática de las evidencias y el informe
 
-## 12. 🔐 Seguridad y limitaciones
+El procesamiento por lotes **no necesita pulsar cinco veces los botones de la aplicación**. Separa adquisición, validación, indicadores, evaluación, extrapolación y construcción del informe.
 
-- No publicar credenciales, tokens, variables de entorno, `.streamlit/secrets.toml` ni archivos personales.
-- La descarga de Yahoo Finance depende de la disponibilidad de un proveedor externo.
-- El almacenamiento temporal del servidor de Streamlit **no debe tratarse como persistente**.
-- Los pronósticos no incorporan eventos futuros, noticias ni cambios estructurales.
-- Los intervalos ARIMA son condicionales al modelo.
-- Antes de hacer público el repositorio, **verificar las condiciones de reutilización y redistribución de los datos financieros archivados**.
+```powershell
+.\.venv\Scripts\python.exe run_10y_pipeline.py --snapshots data/snapshots --output-root reports --until 2026-10-30
+```
 
-## 13. 🎓 Contexto académico y referencias
+El programa:
 
-| Campo | Información |
-|---|---|
-| Institución | **Instituto Internacional de Aguascalientes** |
-| Programa | **Maestría en Inteligencia Artificial para la Transformación Digital** |
-| Asignatura | **Tópicos de IA para la Transformación Digital** |
-| Alumno | **Antonio Nicolás Toro González** |
-| Tutor | **Dr. Francisco Javier Luna Rosas** |
-| Proyecto | **TEMPUS DECISIO — TEMPUS EXPLORATIO, Módulo I** |
+1. Lee los cinco Parquet verificados, **sin descargarlos de nuevo**.
+2. Calcula indicadores y comparaciones normalizadas.
+3. Ejecuta el *walk-forward* cronológico con modelos Ingenuo, SES y ARIMA(1,1,1).
+4. Exporta 765 predicciones retrospectivas y sus métricas agregadas.
+5. Estima 20 sesiones bursátiles para cada modelo y activo: 300 valores.
+6. Produce CSV/JSON, contrato y PDF integral.
+7. Comprueba archivos y hashes; escribe el `manifest.json` al cerrar correctamente.
 
-**Herramientas:** [Python](https://www.python.org/) · [Streamlit](https://streamlit.io/) · [pandas](https://pandas.pydata.org/) · [statsmodels](https://www.statsmodels.org/) · [Plotly](https://plotly.com/python/) · [GitHub](https://github.com/).
+**Ejecución real registrada el 12 de noviembre de 2026:**
 
----
+```text
+FINALIZADO: reports/integral_10y_20261112T042339296752Z
+PDF: reports/integral_10y_20261112T042339296752Z/TEMPUS_EXPLORATIO_Informe_Integral_10_Anos.pdf
+Total: 12570 registros; 765 predicciones retrospectivas
+```
 
-<div align="center">
+La línea `INFORME VERIFICADO` indica que el programa completó sus comprobaciones automáticas. **No sustituye la revisión académica o visual del documento**.
 
-### 📈 TEMPUS DECISIO — TEMPUS EXPLORATIO
+### 5.1. Análisis comparativo anterior a «PRONÓSTICOS FUTUROS»
 
-**📊 Cinco series → 🧮 Ingenuo / SES / ARIMA → 📈 Evaluación temporal → 🔮 Pronóstico → 📄 Informe**
+La actualización local del generador incorpora la sección **«ANÁLISIS COMPARATIVO DE LAS CINCO ACCIONES»** antes de **«PRONÓSTICOS FUTUROS»**, con rendimiento histórico, volatilidad, caída máxima (*drawdown*) y comparación de modelos según las métricas existentes. Evita conclusiones especulativas.
 
-*Práctica 1 · Módulo I · Instituto Internacional de Aguascalientes*
+Para reconstruir el PDF **sin recalcular ARIMA ni las 765 predicciones**, reutilizando el directorio original verificado:
 
-</div>
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_comparative_report.py -q
+.\.venv\Scripts\python.exe rebuild_comparative_report.py --run-dir "reports\integral_10y_20261112T042339296752Z"
+```
+
+**Estado confirmado:** las cuatro pruebas del análisis comparativo pasaron. **No se ha confirmado aún la salida `FINALIZADO` de la reconstrucción en tu Windows**; por tanto, no se afirma que el PDF ampliado ya esté generado. El comando crea una nueva carpeta `integral_10y_<timestamp>`, conserva el informe original y actualiza el manifiesto de la nueva ejecución.
+
+## 6. Prueba integral desde la app
+
+En **Prueba integral**, ejecutar **«Ejecutar prueba integral»**. La sección comprueba los históricos, indicadores, diagnósticos y evidencias disponibles; presenta tabla de estado y gráficas con unidades explícitas.
+
+**Ejemplo reproducible con JNJ:**
+
+1. Cargar el snapshot local de JNJ; revisar **2.514 registros**.
+2. Abrir precios, medias móviles, rendimientos, calidad y estadística temporal.
+3. Ejecutar **Prueba integral** y verificar las cinco series (**12.570 registros**).
+4. Revisar las visualizaciones y el estado de las evidencias.
+5. En **Informe final**, abrir el PDF de diez años y comprobar el análisis comparativo antes de los pronósticos, una vez reconstruido.
+
+**Alcance y límites:** esta prueba valida componentes de cálculo y archivos; **no realiza clics automáticos** sobre cada botón, descarga ni selector de la interfaz. Esos elementos aún requieren pruebas funcionales interactivas.
+
+## 7. Pruebas y criterios de aceptación
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest tests/test_integral_audit_ui.py -q
+.\.venv\Scripts\python.exe -m pytest tests/test_comparative_report.py -q
+```
+
+Los archivos de prueba específicos estarán disponibles si se instalaron sus respectivas ampliaciones.
+
+**Para dar por aceptada la edición local:**
+
+- Cinco históricos reales íntegros, con igual periodo y sesiones.
+- 2.514 observaciones por empresa; 12.570 en total.
+- Evidencias retrospectivas y futuras verificadas por el pipeline.
+- PDF generado en un directorio versionado con `manifest.json`.
+- Sección comparativa anterior a «PRONÓSTICOS FUTUROS», una vez reconstruido el PDF.
+- Etiquetas y unidades claras, tema diurno, navegación y descargas comprobadas.
+- Sin fallos en las pruebas automatizadas ni en los controles manuales exigidos.
+
+Si falla una comprobación, **no debe presentarse la ejecución como íntegra**.
+
+## 8. Organización principal
+
+```text
+TEMPUS EXPLORATIO/
+├── app.py
+├── README.md
+├── requirements.txt
+├── refresh_10y.py
+├── run_10y_pipeline.py
+├── rebuild_comparative_report.py
+├── .streamlit/config.toml
+├── assets/tempus-logo.png
+├── tempus/
+│   ├── core.py
+│   ├── forecasting.py
+│   ├── future.py
+│   ├── history_period.py
+│   ├── integral_audit.py
+│   ├── integral_audit_ui.py
+│   ├── comparative_report.py
+│   ├── integrated_report.py
+│   ├── info_pages.py
+│   └── ... otros módulos
+├── data/snapshots/            # archivos locales versionados
+├── reports/
+│   └── integral_10y_<timestamp>/
+│       ├── evidence/
+│       ├── future/
+│       ├── contrato/
+│       ├── manifest.json
+│       └── TEMPUS_EXPLORATIO_Informe_Integral_10_Anos.pdf
+└── tests/
+```
+
+La estructura exacta puede incluir más módulos, respaldos e informes previos. **No subir** entornos virtuales, secretos, respaldos, temporales ni snapshots sin revisar licencias y permisos de redistribución.
+
+## 9. Reproducibilidad, supuestos y limitaciones
+
+- Las métricas se refieren a **errores retrospectivos** en el periodo de evaluación, no a errores conocidos de los pronósticos futuros.
+- El *walk-forward* toma **51 orígenes**, no todas las fechas posibles.
+- Comparar sMAPE entre empresas no sustituye análisis de riesgo, cambios estructurales ni significancia estadística.
+- Los intervalos condicionales de ARIMA **no garantizan cobertura real del 95 %** fuera de sus supuestos.
+- Los cierres Yahoo Finance pueden incorporar ajustes o revisiones según la columna/fuente; conservar procedencia y fecha de adquisición.
+- Datos bursátiles diarios y evaluación local **no constituyen computación distribuida Big Data**.
+- Las versiones de cinco años se conservan únicamente como **historial archivado**, no como una opción de selección de la aplicación.
+- No insertar métricas de cinco años en un informe de diez años.
+- El análisis es **académico y descriptivo**, no recomendación de inversión.
+
+## 10. Publicación
+
+**No publicar todavía los cambios locales**. El orden acordado es ejecutar pruebas, inspeccionar gráficas e informe comparativo y **solo después** aprobar una actualización de GitHub/Streamlit Community Cloud.
+
+- Repositorio público: https://github.com/edtech-mx-ve/tempus.exploratio
+- Aplicación pública: https://tempus-exploratio.streamlit.app/
+
+Estos enlaces se mantienen como referencia de la **versión previamente desplegada**.

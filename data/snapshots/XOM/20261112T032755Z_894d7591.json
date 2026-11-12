@@ -1,0 +1,16 @@
+{
+  "ticker": "XOM",
+  "asset": {
+    "ticker": "XOM",
+    "company": "ExxonMobil",
+    "sector": "Energía"
+  },
+  "version": "20261112T032755Z_894d7591",
+  "source": "Yahoo Finance / yfinance o importación verificada",
+  "adjustment": "OHLC ajustado si la fuente fue yfinance con auto_adjust=True",
+  "records": 2514,
+  "first_date": "2016-10-31",
+  "last_date": "2026-10-30",
+  "saved_at_utc": "2026-11-12T03:27:55.551952+00:00",
+  "sha256": "8cea546e141f0aa3184e34300de6f7f5e2484c25205db9e12c05fe32de020cd9"
+}

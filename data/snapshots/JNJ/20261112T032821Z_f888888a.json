@@ -1,0 +1,16 @@
+{
+  "ticker": "JNJ",
+  "asset": {
+    "ticker": "JNJ",
+    "company": "Johnson & Johnson",
+    "sector": "Salud"
+  },
+  "version": "20261112T032821Z_f888888a",
+  "source": "Yahoo Finance / yfinance o importación verificada",
+  "adjustment": "OHLC ajustado si la fuente fue yfinance con auto_adjust=True",
+  "records": 2514,
+  "first_date": "2016-10-31",
+  "last_date": "2026-10-30",
+  "saved_at_utc": "2026-11-12T03:28:21.588207+00:00",
+  "sha256": "f0aa9304c1aeee118a84838bda18f2bc722b28b64f9a06b519b4e61d783b2e9b"
+}

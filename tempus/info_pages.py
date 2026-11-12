@@ -84,6 +84,14 @@ La base temporal utiliza **fecha, apertura, máximo, mínimo, cierre y volumen**
 (OHLCV). A partir del cierre se calculan indicadores, rendimientos y
 medidas descriptivas y de riesgo. La cobertura y el número de registros
 dependen del snapshot que se haya cargado.
+
+**Frecuencia:** una observación por sesión bursátil diaria. Los precios
+se expresan en USD por acción y el volumen en acciones negociadas.
+
+**Ventana histórica de la aplicación local:** 2016-10-31 a 2026-10-30
+(10 años; 2.514 sesiones por empresa, 12.570 registros en total
+cuando los cinco snapshots están disponibles y verificados).
+Los registros no incluyen fines de semana ni cierres bursátiles.
 """)
         st.subheader("¿Qué relación tiene con Big Data?")
         st.markdown("""
@@ -119,11 +127,27 @@ de grandes volúmenes ni adquisición en tiempo real.
 """)
         st.subheader("4. Evaluación temporal")
         st.markdown(
-            "La evaluación **walk-forward** respeta el orden temporal. "
-            "Las métricas **MAE**, **RMSE** y **sMAPE** comparan las estimaciones "
-            "con las observaciones posteriores disponibles."
+            "La evaluación **walk-forward** respeta el orden temporal: "
+            "en cada origen se pronostica utilizando solo el histórico disponible "
+            "hasta esa sesión; luego se compara con el valor efectivamente observado. "
+            "**MAE** y **RMSE** expresan errores en USD/acción; "
+            "**sMAPE** los expresa como porcentaje (%). "
+            "Cuanto menores sean estas métricas, mejor fue el ajuste retrospectivo "
+            "en las condiciones evaluadas; no garantizan precisión futura."
         )
-        st.subheader("5. Extrapolación e incertidumbre")
+        st.subheader("5. Indicadores, diagnóstico y unidades")
+        st.markdown(
+            "**MA20 y MA50** son promedios de cierre de 20 y 50 sesiones bursátiles. "
+            "El **rendimiento diario (%)** mide la variación porcentual entre dos cierres. "
+            "La **volatilidad anualizada (%)** resume la dispersión de esos rendimientos "
+            "con una escala anual aproximada (252 sesiones). "
+            "El **drawdown (%)** mide la caída respecto al máximo previo. "
+            "Una comparación **base 100** representa variación relativa y no precios en USD. "
+            "**ADF/KPSS** ofrecen evidencia estadística sobre estacionariedad; "
+            "**ACF/PACF**, sobre dependencia temporal. "
+            "Ninguna prueba debe interpretarse de forma aislada."
+        )
+        st.subheader("6. Extrapolación e incertidumbre")
         st.markdown(
             "Los horizontes disponibles son **1, 5, 10 y 20 sesiones NYSE**. "
             "Los intervalos condicionales del **95 %** se estiman para ARIMA; "
@@ -158,29 +182,66 @@ de grandes volúmenes ni adquisición en tiempo real.
 
     elif page == "Ayuda":
         _intro("Ayuda · Recorrido rápido",
-               "Cómo utilizar TEMPUS EXPLORATIO de principio a fin")
+               "Cómo utilizar TEMPUS EXPLORATIO con el histórico fijo de diez años")
         st.markdown("""
-1. En **Control de datos**, elige empresa, fuente y fechas.
-2. Pulsa **Cargar / adquirir datos**.
+1. En **Control de datos**, elige empresa y **Snapshot local**. La ventana
+   es exclusivamente de **10 años (2016–2026)**.
+2. Si no existen los históricos, pulsa **Descargar las 5 empresas (10 años)**;
+   después pulsa **Cargar / adquirir datos**.
 3. Revisa **Precio e indicadores**, **Rendimientos**, **Calidad** y
    **Estadística temporal**.
-4. Examina **Comparación multiserie** y **Pronósticos estadísticos**.
-5. En **Pronóstico futuro**, elige horizonte y calcula las estimaciones.
-6. Finaliza en **Informe final** para consolidar los resultados y descargar el PDF.
+4. Consulta **Comparación multiserie**, **Pronósticos estadísticos** y
+   **Pronóstico futuro**.
+5. Ejecuta **Prueba integral** para verificar históricos, indicadores,
+   evidencias y gráficas; revisa cualquier error antes de continuar.
+6. En **Informe final**, abre o descarga el PDF integral de diez años
+   si ya fue generado y verificado.
+""")
+        st.subheader("Ejemplo práctico · Prueba integral con JNJ")
+        st.markdown("""
+**Objetivo:** comprobar que los históricos y las evidencias de diez años
+son coherentes, sin introducir datos sintéticos ni cambiar los modelos.
+
+1. Selecciona **JNJ** y **Snapshot local**; pulsa **Cargar / adquirir datos**.
+2. Comprueba la cobertura **2016-10-31 a 2026-10-30**, con
+   **2.514 registros** para JNJ (si el snapshot sigue siendo el verificado).
+3. Abre **Precio e indicadores** y confirma el eje
+   **Precio (USD/acción)** y las medias móviles MA20 y MA50,
+   calculadas en sesiones bursátiles.
+4. Abre **Rendimientos** y **Estadística temporal**:
+   identifica los rendimientos en **%** y revisa ADF, KPSS, ACF y PACF.
+5. En **Prueba integral**, pulsa **Ejecutar prueba integral**.
+   Revisa los estados de las cinco empresas, el resumen numérico y las
+   gráficas de precios, rendimientos, volatilidad, volumen y comparación.
+6. En **Informe final**, confirma la disponibilidad del PDF
+   **TEMPUS_EXPLORATIO_Informe_Integral_10_Anos.pdf**
+   y que el periodo es de **10 años**.
+
+**Resultado esperado:** cinco series verificadas,
+**12.570 registros históricos** en total, gráficos con unidades legibles
+y evidencias de evaluación/pronósticos disponibles.
+Si algún control indica ERROR, el ejercicio **no está aprobado**:
+consulta el detalle y corrige la causa antes de utilizar el informe.
+
+**Alcance:** «Prueba integral» verifica cálculos y evidencias;
+no simula automáticamente clics sobre todos los controles de Streamlit.
 """)
         st.subheader("Problemas frecuentes")
         st.markdown("""
-- **No hay snapshots:** adquiere los datos desde Yahoo Finance o emplea
-  la demostración sintética, que se identifica explícitamente.
-- **No aparece el resultado esperado:** comprueba que el botón de cálculo
-  correspondiente se haya ejecutado.
+- **No hay snapshots:** descarga los cinco históricos reales de
+  Yahoo Finance y vuelve a cargar la fuente «Snapshot local».
+- **Falta el informe integral:** ejecuta el programa local
+  `python run_10y_pipeline.py --snapshots data/snapshots --output-root reports --until 2026-10-30`
+  y repite **Prueba integral**.
+- **No aparece el resultado esperado:** comprueba el botón de cálculo
+  de la sección y los mensajes de error.
 - **No se ven cambios de interfaz:** recarga el navegador con `Ctrl + F5`.
-- **Pronóstico con fecha anterior a hoy:** actualiza las cotizaciones y
-  vuelve a calcular; «futuro» significa posterior al último dato del archivo.
+- **Pronóstico con fecha anterior a hoy:** actualiza las cotizaciones
+  y vuelve a calcular; «futuro» significa posterior al último dato del archivo.
 """)
         st.caption(
-            "Ejecución local habitual: python -m streamlit run app.py · "
-            "http://localhost:8501"
+            "Ejecución local: python -m streamlit run app.py · "
+            "http://localhost:8501 · Las estimaciones no son consejos de inversión."
         )
 
     elif page == "Institucional":

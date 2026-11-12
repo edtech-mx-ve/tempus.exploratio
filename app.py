@@ -1,4 +1,4 @@
-"""TEMPUS EXPLORATIO · Módulo I · Interfaz operativa v0.5.5."""
+"""TEMPUS EXPLORATIO · Módulo I · Interfaz operativa v0.6.2."""
 from datetime import date
 from pathlib import Path
 from PIL import Image
@@ -45,14 +45,14 @@ div.stButton > button[kind="primary"] {background:#1767E8;color:white;border:0}
     position: sticky !important;
     top: 3.5rem;
     z-index: 999;
-    background: var(--background-color, #0e1117);
+    background: #F3F6FB;
     border-bottom: 1px solid rgba(140, 145, 152, .45);
     padding: .35rem 0 .55rem;
     box-shadow: 0 4px 12px rgba(0,0,0,.18);
 }
 /* Fallback: diferentes versiones pueden variar sus envoltorios. */
 .st-key-tempus_workspace .st-key-tempus_navigation {
-    background: var(--background-color, #0e1117);
+    background: #F3F6FB;
 }
 .st-key-tempus_navigation [data-testid="stRadio"] > div[role="radiogroup"] {
     flex-wrap: nowrap;
@@ -66,10 +66,17 @@ div.stButton > button[kind="primary"] {background:#1767E8;color:white;border:0}
     padding: .35rem .55rem;
     border-radius: .3rem;
     cursor: pointer;
+    color: #172033 !important;
+}
+.st-key-tempus_navigation [data-testid="stRadio"] label p {
+    color: #172033 !important;
 }
 .st-key-tempus_navigation [data-testid="stRadio"] label:has(input:checked) {
     border-bottom: 2px solid #ef3299;
     color: #ef3299;
+}
+.st-key-tempus_navigation [data-testid="stRadio"] label:has(input:checked) p {
+    color: #b60062 !important;
 }
 @media(max-width: 640px) {
     .st-key-tempus_workspace div[data-testid="stVerticalBlock"]
@@ -84,43 +91,75 @@ with col_logo:
 with col_presentacion:
     st.title("TEMPUS EXPLORATIO")
     st.caption("TEMPUS DECISIO · Módulo I · Exploración estadística y adquisición versionada")
-st.info("v0.5.6 · Edición pública preparada para GitHub y Streamlit Community Cloud.")
+st.info("v0.6.2 · Histórico real de 10 años · Frecuencia diaria bursátil · Pronósticos y evaluación.")
+
+from tempus.history_period import CUTOFF, period_start, covers_period, load_covered_snapshot
+
+# Único periodo admitido en la edición local: 10 años de sesiones bursátiles.
+years = 10
+first = period_start(years, CUTOFF)
+last = CUTOFF
 
 with st.sidebar:
     st.header("Control de datos")
-    ticker = st.selectbox("Activo financiero", list(ASSETS), format_func=lambda k: f"{k} · {ASSETS[k].company}")
-    source = st.radio("Origen", ["Snapshot local", "Histórico incluido", "Yahoo Finance", "Demostración sintética"], index=0)
-    first = st.date_input("Desde", value=date(2021, 11, 1))
-    last = st.date_input("Hasta (inclusive)", value=date(2026, 10, 31))
+    ticker = st.selectbox("Activo financiero", list(ASSETS),
+                          format_func=lambda k: f"{k} · {ASSETS[k].company}")
+    st.caption(f"**Periodo histórico: 10 años** · {first:%d/%m/%Y} – {last:%d/%m/%Y}")
+    source = st.radio("Origen", ["Snapshot local", "Yahoo Finance"], index=0,
+                      help="Snapshot local: datos de diez años ya descargados. "
+                           "Yahoo Finance: adquiere una nueva versión real.")
     get_data = st.button("Cargar / adquirir datos", type="primary", width="stretch")
+    download_all = st.button("Descargar las 5 empresas (10 años)",
+                             help="Descarga y versiona las cinco series reales desde Yahoo Finance.")
+    st.caption("Frecuencia: diaria bursátil · Precios: USD/acción · "
+               "10 años ≈ 2.500 sesiones por empresa.")
     selected_info_page = render_sidebar_information()
 
-if get_data:
+if get_data or download_all:
     try:
-        if source == "Demostración sintética":
-            frame = synthetic_series()
-            origin = "SIMULACIÓN — sin datos reales"
-        elif source == "Histórico incluido":
-            frame = load_public_series(ticker)
-            origin = "HISTÓRICO PÚBLICO INCLUIDO — corte 2026-10-30 (puede estar desactualizado)"
-        elif source == "Yahoo Finance":
-            if first >= last:
-                raise ValueError("El inicio debe ser anterior al final")
-            # yfinance interpreta el límite end como exclusivo
-            frame = download_ticker(ticker, first, last + pd.Timedelta(days=1))
-            saved = save_snapshot(frame, ticker, STORE)
-            origin = f"YAHOO FINANCE — versión {saved.stem}"
+        if download_all:
+            errors = []
+            completed = []
+            with st.spinner("Descargando y guardando diez años de las cinco series..."):
+                for symbol in ASSETS:
+                    try:
+                        data_new = download_ticker(symbol, first, last + pd.Timedelta(days=1))
+                        if not covers_period(data_new.index, first, last):
+                            raise ValueError("La descarga no cubre los diez años solicitados.")
+                        saved_new = save_snapshot(data_new, symbol, STORE)
+                        completed.append(symbol)
+                        if symbol == ticker:
+                            st.session_state["frame"] = data_new
+                            st.session_state["ticker"] = ticker
+                            st.session_state["origin"] = (
+                                f"YAHOO FINANCE · 10 años · {saved_new.stem}"
+                            )
+                    except (ValueError, TypeError, RuntimeError, OSError, ImportError, KeyError) as exc:
+                        logging.exception("Error de descarga de %s", symbol)
+                        errors.append(f"{symbol}: {exc}")
+            if completed:
+                st.success("Guardadas versiones nuevas: " + ", ".join(completed))
+            if errors:
+                st.error("Descargas pendientes: " + " | ".join(errors))
         else:
-            versions = list_snapshots(ticker, STORE)
-            if versions:
-                frame = load_snapshot(versions[0], STORE, ticker)
-                origin = f"SNAPSHOT LOCAL — versión {versions[0].stem}"
+            if source == "Yahoo Finance":
+                frame = download_ticker(ticker, first, last + pd.Timedelta(days=1))
+                if not covers_period(frame.index, first, last):
+                    raise ValueError("Los datos descargados no cubren los diez años solicitados.")
+                saved = save_snapshot(frame, ticker, STORE)
+                origin = f"YAHOO FINANCE · 10 años — versión {saved.stem}"
             else:
-                frame = load_public_series(ticker)
-                origin = "HISTÓRICO PÚBLICO INCLUIDO — corte 2026-10-30 (sin snapshots locales)"
-        st.session_state["frame"] = frame
-        st.session_state["ticker"] = ticker
-        st.session_state["origin"] = origin
+                chosen = load_covered_snapshot(ticker, STORE, first, last)
+                if chosen is None:
+                    raise FileNotFoundError(
+                        "No existe un snapshot local válido de diez años. "
+                        "Pulsa «Descargar las 5 empresas (10 años)»."
+                    )
+                frame, selected_snapshot = chosen
+                origin = f"SNAPSHOT LOCAL · 10 años — {selected_snapshot.stem}"
+            st.session_state["frame"] = frame
+            st.session_state["ticker"] = ticker
+            st.session_state["origin"] = origin
     except (ValueError, TypeError, RuntimeError, OSError, ImportError, KeyError) as exc:
         logging.exception("Error al cargar")
         st.error(f"No se pudo cargar la serie: {exc}")
@@ -132,10 +171,14 @@ if selected_info_page != "Análisis financiero":
 
 if "frame" not in st.session_state:
     st.markdown("### Inicia un análisis")
-    st.write("Selecciona un origen y pulsa **Cargar / adquirir datos**. La opción **Histórico incluido** permite explorar las cinco series reales archivadas sin acceso a Yahoo Finance.")
+    st.write("Selecciona **Snapshot local** y pulsa **Cargar / adquirir datos** para visualizar los diez años descargados.")
     st.stop()
 
 frame = normalize_prices(st.session_state["frame"])
+if st.session_state["ticker"] != ticker or not covers_period(frame.index, first, last):
+    st.warning("La serie cargada no coincide con el activo o el periodo seleccionado. "
+               "Pulsa «Cargar / adquirir datos» para actualizarla.")
+    st.stop()
 ticker_used = st.session_state["ticker"]
 if "SIMULACIÓN" in st.session_state["origin"]:
     st.warning(st.session_state["origin"])
@@ -152,6 +195,7 @@ NAV_LABELS = (
     "Precio e indicadores", "Rendimientos", "Datos y exportación",
     "Calidad", "Estadística temporal", "Comparación multiserie",
     "Pronósticos estadísticos", "Pronóstico futuro", "Informe final",
+    "Prueba integral",
 )
 
 with st.container(key="tempus_workspace"):
@@ -166,12 +210,16 @@ with st.container(key="tempus_workspace"):
     if selected_tab == NAV_LABELS[0]:
         display = data.reset_index()
         fig = px.line(display, x="Date", y=["Close", "sma_20", "sma_50"],
-                      labels={"value":"Precio (USD)", "Date":"Fecha", "variable":"Serie"},
-                      title=f"{ticker_used} · Cierre y medias móviles")
+                      labels={"value":"Precio (USD/acción)", "Date":"Fecha (sesiones bursátiles diarias)", "variable":"Serie"},
+                      title=f"{ticker_used} · Cierre y medias móviles (frecuencia diaria bursátil)")
+        st.caption("MA20 y MA50 corresponden a 20 y 50 sesiones bursátiles, respectivamente.")
         st.plotly_chart(fig, width="stretch")
     if selected_tab == NAV_LABELS[1]:
-        fig = px.histogram(data.reset_index(), x="return_1d", nbins=45,
-                           title="Distribución de rendimientos diarios")
+        rendimientos_pct = data.reset_index().assign(rendimiento_pct=lambda df: df["return_1d"] * 100)
+        fig = px.histogram(rendimientos_pct, x="rendimiento_pct", nbins=45,
+                           title="Distribución de rendimientos por sesión bursátil",
+                           labels={"rendimiento_pct":"Rendimiento diario (%)", "count":"Número de sesiones bursátiles"})
+        fig.update_layout(yaxis_title="Número de sesiones bursátiles")
         st.plotly_chart(fig, width="stretch")
     if selected_tab == NAV_LABELS[2]:
         st.dataframe(data.tail(100), width="stretch")
@@ -193,10 +241,13 @@ with st.container(key="tempus_workspace"):
         try:
             stats = descriptive_statistics(frame)
             st.dataframe(pd.DataFrame([stats]).T.rename(columns={0: "Valor"}), width="stretch")
+            drawdown_pct = drawdown_series(frame).reset_index().assign(
+                drawdown_pct=lambda df: df["drawdown"] * 100)
             st.plotly_chart(
-                px.line(drawdown_series(frame).reset_index(), x="Date", y="drawdown",
+                px.line(drawdown_pct, x="Date", y="drawdown_pct",
                         title="Caída desde máximo histórico (drawdown)",
-                        labels={"drawdown": "Caída relativa", "Date": "Fecha"}),
+                        labels={"drawdown_pct": "Caída desde máximo (%)",
+                                "Date": "Fecha (sesiones bursátiles diarias)"}),
                 width="stretch",
             )
             target = st.radio("Variable para dependencia y estacionariedad",
@@ -217,7 +268,9 @@ with st.container(key="tempus_workspace"):
                 px.bar(dependence.melt(id_vars="rezago", value_vars=["ACF", "PACF"],
                                         var_name="funcion", value_name="coeficiente"),
                        x="rezago", y="coeficiente", color="funcion", barmode="group",
-                       title="ACF y PACF por rezago"),
+                       title="ACF y PACF por rezago",
+                       labels={"rezago": "Rezago (sesiones bursátiles)",
+                               "coeficiente": "Correlación (sin unidad)", "funcion": "Función"}),
                 width="stretch",
             )
             st.download_button(
@@ -231,17 +284,17 @@ with st.container(key="tempus_workspace"):
             st.warning(f"Análisis estadístico no disponible: {exc}")
 
     if selected_tab == NAV_LABELS[5]:
-        st.subheader("Comparación de cinco series · snapshots locales")
-        st.caption("Se emplean únicamente snapshots locales, sin nuevas descargas ni datos simulados.")
+        st.subheader("Comparación de cinco series · snapshots del periodo seleccionado")
+        st.caption("Se emplean snapshots locales íntegros con cobertura del periodo; no se descargan datos aquí.")
         frames: dict[str, pd.DataFrame] = {}
         missing: list[str] = []
         for symbol in ASSETS:
             try:
-                found = list_snapshots(symbol, STORE)
-                if not found:
+                covered = load_covered_snapshot(symbol, STORE, first, last)
+                if covered is None:
                     missing.append(symbol)
                     continue
-                frames[symbol] = load_snapshot(found[0], STORE, symbol)
+                frames[symbol] = covered[0]
             except (ValueError, TypeError, RuntimeError, OSError, ImportError, KeyError) as exc:
                 logging.warning("Snapshot de %s no disponible: %s", symbol, type(exc).__name__)
                 missing.append(symbol)
@@ -257,7 +310,7 @@ with st.container(key="tempus_workspace"):
                                                       value_name="base100"),
                             x="Date", y="base100", color="ticker",
                             title="Índice base 100 desde la primera sesión común",
-                            labels={"base100": "Índice (base 100)", "Date": "Fecha"}),
+                            labels={"base100": "Índice (base 100)", "Date": "Fecha (sesiones bursátiles diarias)"}),
                     width="stretch",
                 )
                 correlation = correlation_matrix(frames)
@@ -327,7 +380,7 @@ with st.container(key="tempus_workspace"):
                     id_vars="Date", var_name="serie", value_name="precio")
                 st.plotly_chart(px.line(
                     plot_data, x="Date", y="precio", color="serie",
-                    title="Pronóstico a una sesión y cierre observado"),
+                    title="Pronóstico a 1 sesión bursátil y cierre observado", labels={"Date":"Fecha (sesiones bursátiles diarias)", "precio":"Precio (USD/acción)"}),
                     width="stretch")
                 st.write("**Trazabilidad de la evaluación**")
                 st.json({k: v for k, v in metadata.items() if k != "fallos"})
@@ -354,88 +407,67 @@ with st.container(key="tempus_workspace"):
 
 
     if selected_tab == NAV_LABELS[8]:
-        st.subheader("Consolidación final · TEMPUS EXPLORATIO")
-        st.caption("Métodos estadísticos utilizados: pronóstico ingenuo (último cierre), "
-                   "suavizamiento exponencial simple (SES) y ARIMA(1,1,1). "
-                   "Evaluación cronológica walk-forward con MAE, RMSE y sMAPE.")
-        st.caption("Informe integral: evaluación histórica y pronósticos posteriores "
-                   "al último cierre. Se utilizan exportaciones verificadas, sin descargar "
-                   "cotizaciones ni volver a entrenar los modelos.")
-        source_path = Path("evidence/sprint03")
-        st.code(str(source_path.resolve()), language=None)
-        if not source_path.is_dir():
-            st.warning("No existe evidence/sprint03. Copia los CSV y JSON originales "
-                       "antes de consolidar.")
+        st.subheader("Consolidación final · diez años")
+        st.caption("Cinco series diarias bursátiles; modelos Ingenuo, "
+                   "Suavizamiento Exponencial Simple y ARIMA(1,1,1). "
+                   "Evaluación walk-forward: MAE, RMSE y sMAPE.")
+        st.info("Análisis integral de 10 años (2016–2026): las métricas y los "
+                "pronósticos se calcularon automáticamente utilizando 12.570 "
+                "registros históricos reales de cinco empresas, sin necesidad "
+                "de ejecutar cada análisis manualmente.")
+        st.code(
+            r".\\.venv\\Scripts\\python.exe run_10y_pipeline.py "
+            r"--snapshots data/snapshots --output-root reports",
+            language="powershell",
+        )
+        import json
+        from hashlib import sha256
+        generated = sorted(Path("reports").glob("integral_10y_*/manifest.json"),
+                           reverse=True)
+        if not generated:
+            st.warning("Todavía no existe un informe consolidado de diez años. "
+                       "Ejecuta el comando anterior en PowerShell.")
         else:
             try:
-                evidence = load_evidence(source_path)
-                st.success("Evidencia verificada: cinco empresas, tres modelos y fechas comunes.")
-                st.dataframe(evidence.metrics, width="stretch", hide_index=True)
-                st.write("**Mejor modelo por MAE dentro de cada empresa**")
-                st.dataframe(best_models(evidence.metrics), width="stretch", hide_index=True)
-                future_dir = Path("reports/sprint05_futuro")
-                st.write("**Pronósticos futuros para las cinco empresas**")
-                st.caption(f"Directorio de resultados: {future_dir.resolve()}")
-                from tempus.integrated_report import (
-                    load_future_exports, create_integrated_pdf,
+                manifest_path = generated[0]
+                summary_data = json.loads(manifest_path.read_text(encoding="utf-8"))
+                if summary_data.get("version") != "10y.1" or set(summary_data.get("tickers", [])) != set(ASSETS):
+                    raise ValueError("Manifiesto de evaluación no válido")
+                pdf_name = summary_data["pdf"]
+                if Path(pdf_name).name != pdf_name:
+                    raise ValueError("Nombre de PDF inseguro")
+                pdf_path = manifest_path.parent / pdf_name
+                digest = sha256(pdf_path.read_bytes()).hexdigest()
+                if digest != summary_data["sha256_archivos"].get(pdf_name):
+                    raise ValueError("El PDF no coincide con su manifiesto SHA-256")
+                current_snapshot = load_covered_snapshot(ticker_used, STORE, first, last)
+                if current_snapshot is None:
+                    raise ValueError("No hay snapshot de diez años para verificar el informe")
+                _, current_path = current_snapshot
+                loaded_digest = json.loads(
+                    current_path.with_suffix(".json").read_text(encoding="utf-8")
+                )["sha256"]
+                if loaded_digest != summary_data["sources"][ticker_used]["sha256"]:
+                    raise ValueError("El informe fue generado desde otro snapshot. "
+                                     "Reejecuta la consolidación.")
+                st.success("Informe integral de diez años generado y verificado.")
+                st.write(f"**Periodo:** {summary_data['periodo'][0]} a {summary_data['periodo'][1]}")
+                st.write(f"**Registros:** {summary_data['registros_totales']:,} · "
+                         f"**Predicciones retrospectivas:** {summary_data['evaluaciones_totales']:,}")
+                st.dataframe(pd.DataFrame([
+                    {"Empresa": t, "Observaciones": summary_data["observaciones_por_empresa"][t],
+                     "Evaluaciones": summary_data["evaluaciones_por_empresa"][t],
+                     "Menor MAE": summary_data["mejor_por_mae"][t]}
+                    for t in ASSETS
+                ]), hide_index=True, width="stretch")
+                st.download_button(
+                    "Descargar informe integral PDF · 10 años",
+                    data=pdf_path.read_bytes(), file_name=pdf_path.name,
+                    mime="application/pdf",
                 )
-                futures_ready = None
-                try:
-                    futures_ready = load_future_exports(future_dir, evidence)
-                    summary_rows = []
-                    for asset, (forecast_table, meta_future) in futures_ready.items():
-                        for horizon in (1, 5, 10, 20):
-                            subset = forecast_table.loc[
-                                (forecast_table["sesion"] == horizon)
-                                & (forecast_table["modelo"] == "ARIMA(1,1,1)")
-                            ]
-                            point = subset.iloc[0]
-                            summary_rows.append({
-                                "Empresa": asset,
-                                "Último dato": meta_future["ultimo_dato_observado"],
-                                "Horizonte": horizon,
-                                "Fecha estimada": pd.Timestamp(point["Date"]).date(),
-                                "ARIMA USD": round(float(point["pronostico"]), 4),
-                            })
-                    st.dataframe(pd.DataFrame(summary_rows), width="stretch",
-                                 hide_index=True)
-                    st.info("Las fechas estimadas son posteriores al último dato "
-                            "del snapshot, pero podrían ser anteriores a hoy.")
-                except (OSError, ValueError, TypeError, RuntimeError, KeyError) as exc:
-                    st.warning("No se pudo verificar el conjunto completo de pronósticos "
-                               f"futuros: {exc}. Ejecuta future_cli.py para obtener "
-                               "los horizontes de 1, 5, 10 y 20 sesiones.")
-                if st.button("Generar informe final integral PDF y contrato",
-                             type="primary", disabled=futures_ready is None):
-                    from tempus.reporting import export_contract
-                    from datetime import datetime, timezone
-                    try:
-                        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-                        destination = Path("reports") / f"integral_{stamp}"
-                        pdf_file = destination / "TEMPUS_EXPLORATIO_Informe_Final_Integral.pdf"
-                        # La generación de PDF verifica coherencia antes de publicar.
-                        created_pdf = create_integrated_pdf(
-                            evidence, futures_ready, pdf_file)
-                        contract_files = export_contract(evidence, destination)
-                        st.session_state["final_pdf"] = created_pdf.read_bytes()
-                        st.session_state["final_pdf_filename"] = created_pdf.name
-                        st.success("Informe integral generado: análisis histórico, "
-                                   "evaluación y cinco gráficas de pronóstico futuro. "
-                                   f"Contrato: {len(contract_files)} archivos. "
-                                   f"Carpeta: {destination}")
-                    except (OSError, ValueError, TypeError, RuntimeError,
-                            ImportError, FileExistsError, KeyError) as exc:
-                        logging.exception("Fallo al generar informe integral")
-                        st.error(f"No se pudo generar el informe integral: {exc}")
-                if "final_pdf" in st.session_state:
-                    st.download_button("Descargar informe final integral PDF",
-                        data=st.session_state["final_pdf"],
-                        file_name=st.session_state["final_pdf_filename"],
-                        mime="application/pdf")
-            except (ValueError, TypeError, OSError, RuntimeError, KeyError) as exc:
-                logging.exception("La evidencia no pasa validación")
-                st.error(f"Datos no válidos para consolidación: {exc}")
-
+                st.caption(f"Evidencias y trazabilidad: {manifest_path.parent}")
+            except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+                st.error(f"No se pudo validar el informe guardado: {exc}")
 
     if selected_tab == NAV_LABELS[7]:
         st.subheader("Pronóstico futuro · " + ticker_used)
@@ -476,8 +508,8 @@ with st.container(key="tempus_workspace"):
                 lines = pd.concat([previous[["Date", "serie", "precio"]],
                                    future_lines[["Date", "serie", "precio"]]], ignore_index=True)
                 chart = px.line(lines, x="Date", y="precio", color="serie", markers=True,
-                                title="Últimos 60 cierres y estimaciones posteriores",
-                                labels={"Date": "Fecha", "precio": "USD", "serie": "Modelo"})
+                                title=f"Últimos 60 cierres y pronóstico a {used_horizon} sesiones bursátiles",
+                                labels={"Date": "Fecha (sesiones bursátiles diarias)", "precio": "Precio (USD/acción)", "serie": "Modelo"})
                 arima_bounds = estimates[estimates["modelo"] == "ARIMA(1,1,1)"].sort_values("Date")
                 if not arima_bounds.empty:
                     chart.add_scatter(x=arima_bounds["Date"], y=arima_bounds["limite_superior"],
@@ -502,3 +534,7 @@ with st.container(key="tempus_workspace"):
                                    mime="application/json")
             else:
                 st.info("Ejecuta el pronóstico con la selección actual.")
+
+    if selected_tab == "Prueba integral":
+        from tempus.integral_audit_ui import render_integral_audit
+        render_integral_audit(STORE, Path("reports"))

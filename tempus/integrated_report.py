@@ -20,6 +20,7 @@ from tempus.assets import ASSETS
 from tempus.forecasting import METHODS
 from tempus.future import future_sessions
 from tempus.future_report import create_future_appendix
+from tempus.comparative_report import create_comparative_appendix
 from tempus.report_pdf import create_academic_pdf
 from tempus.reporting import Evidence
 
@@ -143,14 +144,17 @@ def create_integrated_pdf(
         scratch = Path(folder)
         historical = create_academic_pdf(
             evidence, scratch / "historico.pdf")
+        comparative = create_comparative_appendix(
+            evidence, scratch / "comparativo.pdf")
         appendix = create_future_appendix(
             futures, scratch / "pronosticos.pdf",
             historical=evidence.indicators)
         writer = PdfWriter()
         writer.append(str(historical))
+        writer.append(str(comparative))
         writer.append(str(appendix))
         writer.add_metadata({
-            "/Title": "TEMPUS EXPLORATIO - Informe final integral v0.5.1",
+            "/Title": "TEMPUS EXPLORATIO - Informe integral de diez años",
             "/Subject": "Practica 1 - Historico, evaluacion y pronosticos futuros de cinco empresas",
             "/Author": "TEMPUS DECISIO",
         })

@@ -1,0 +1,16 @@
+{
+  "config": {
+    "test_fraction": 0.2,
+    "step": 10,
+    "min_train": 100
+  },
+  "horizonte_sesiones": 1,
+  "periodo_entrenamiento_inicio": "2016-10-31",
+  "periodo_entrenamiento_fin_inicial": "2024-10-28",
+  "periodo_prueba_inicio": "2024-10-29",
+  "periodo_prueba_fin": "2026-10-30",
+  "evaluaciones_programadas": 51,
+  "evaluaciones_comunes": 51,
+  "fallos": [],
+  "nota": "Evaluación histórica, no garantiza resultados futuros. Cada origen pronostica la próxima sesión; solo se evalúa uno de cada step orígenes."
+}
