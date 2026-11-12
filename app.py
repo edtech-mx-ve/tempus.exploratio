@@ -1,6 +1,7 @@
 """TEMPUS EXPLORATIO · Módulo I · Interfaz operativa v0.5.5."""
 from datetime import date
 from pathlib import Path
+from PIL import Image
 import logging
 import pandas as pd
 import numpy as np
@@ -24,8 +25,12 @@ from tempus.statistics import (
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
 STORE = Path("data/snapshots")
+LOGO_PATH = Path(__file__).resolve().parent / "assets" / "tempus-logo.png"
+if not LOGO_PATH.is_file():
+    raise FileNotFoundError(f"Logotipo no encontrado: {LOGO_PATH}")
+LOGO = Image.open(LOGO_PATH)
 
-st.set_page_config(page_title="TEMPUS EXPLORATIO", page_icon="📈", layout="wide")
+st.set_page_config(page_title="TEMPUS EXPLORATIO", page_icon=LOGO, layout="wide")
 st.markdown("""
 <style>
 :root {--tempus-blue:#1767E8; --tempus-pink:#EF3299}
@@ -73,8 +78,12 @@ div.stButton > button[kind="primary"] {background:#1767E8;color:white;border:0}
     }
 }
 </style>""", unsafe_allow_html=True)
-st.title("TEMPUS EXPLORATIO")
-st.caption("TEMPUS DECISIO · Módulo I · Exploración estadística y adquisición versionada")
+col_logo, col_presentacion = st.columns([1, 8])
+with col_logo:
+    st.image(str(LOGO_PATH), width=108)
+with col_presentacion:
+    st.title("TEMPUS EXPLORATIO")
+    st.caption("TEMPUS DECISIO · Módulo I · Exploración estadística y adquisición versionada")
 st.info("v0.5.6 · Edición pública preparada para GitHub y Streamlit Community Cloud.")
 
 with st.sidebar:

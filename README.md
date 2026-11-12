@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="assets/tempus-logo.png" width="150" alt="Logotipo de TEMPUS EXPLORATIO: reloj y gráfica financiera ascendente">
+
 # 📈 TEMPUS DECISIO — TEMPUS EXPLORATIO
 
 ### 🕰️ Módulo I · Análisis y pronóstico estadístico de series temporales financieras
@@ -8,7 +10,7 @@
 
 **🐍 Python 3.12 · 📊 Streamlit y Plotly · 🧮 pandas y statsmodels · 📄 PDF**
 
-**[🌐 Aplicación web — pendiente de desplegar](https://share.streamlit.io/) · [📁 Repositorio GitHub](https://github.com/edtech-mx-ve/tempus.exploratio)**
+**[🌐 Abrir TEMPUS EXPLORATIO en Streamlit](https://tempus-exploratio.streamlit.app/) · [📁 Repositorio GitHub](https://github.com/edtech-mx-ve/tempus.exploratio)**
 
 </div>
 
@@ -32,7 +34,8 @@
 | Horizontes de pronóstico | 1, 5, 10 y 20 sesiones de NYSE |
 | Incertidumbre | Intervalo condicional del 95 % para ARIMA |
 | Informe | PDF integral generado **desde la aplicación** |
-| Despliegue | **Pendiente de configurar y verificar** |
+| URL de la aplicación | [https://tempus-exploratio.streamlit.app/](https://tempus-exploratio.streamlit.app/) |
+| Estado del despliegue | **URL comunicada; acceso público y funciones pendientes de verificación independiente** |
 
 > Los pronósticos son posteriores al último registro **del conjunto seleccionado**, no necesariamente posteriores a la fecha de consulta. No son recomendaciones de inversión.
 
@@ -208,7 +211,11 @@ En [Streamlit Community Cloud](https://share.streamlit.io/), selecciona:
 | Versión Python | `3.12` |
 | Dependencias | `requirements.txt` |
 
-La URL pública **se incorporará después del despliegue y su comprobación**.
+**Dirección de la aplicación:** [https://tempus-exploratio.streamlit.app/](https://tempus-exploratio.streamlit.app/).
+
+> **Estado de verificación:** esta URL fue proporcionada tras el proceso de publicación. En una comprobación externa, el servicio redirigió a una página de autenticación de Streamlit; por ello, la accesibilidad sin iniciar sesión y las funciones operativas deben validarse desde una ventana privada del navegador.
+
+Para completar la aceptación del despliegue, comprobar que se puede acceder a la aplicación, cargar los cinco históricos incluidos, consultar los pronósticos y generar el informe integral. La disponibilidad de la dirección no demuestra por sí sola que todos los módulos funcionen.
 
 ## 11. ✅ Comprobaciones y reproducibilidad
 
